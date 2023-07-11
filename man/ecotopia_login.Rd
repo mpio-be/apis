@@ -4,12 +4,14 @@
 \alias{ecotopia_login}
 \title{ecotopia login token}
 \usage{
-ecotopia_login(un, pwd, kw1, kw2)
+ecotopia_login(un, pwd, kw1, kw2, verbose = TRUE)
 }
 \arguments{
 \item{un}{username}
 
 \item{pwd}{password}
+
+\item{verbose}{print \link[httr2:request]{httr2::request} string. Default to TRUE.}
 }
 \value{
 a character string
@@ -19,6 +21,6 @@ ecotopia login token
 }
 \examples{
 crd = config::get(config = "druid_api")
-logstr = ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1)
+logstring = ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1,  crd$kw2)
 
 }
