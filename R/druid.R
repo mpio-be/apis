@@ -6,8 +6,8 @@
 #' @param un   username
 #' @param pwd  password
 #' @param verbose      print [httr2::request] string. Default to TRUE.
-#'
-#' @return a character string
+#' @note credentials are saved to a `config` file. See examples.
+#' @return a character string 
 #' @export
 #' @examples 
 #' crd = config::get(config = "druid_api")
@@ -59,11 +59,19 @@ ecotopia_devlist <- function(logstring, verbose = TRUE) {
 }
 
 
-.ecotopia_gps <- function(logstring, id, datetime = "2000-01-01T00:00:00Z", verbose = TRUE) {
-  x <- request("https://www.ecotopiago.com/api/v2/gps/device") |>
+.ecotopia_data <- function(logstring, id, datetime, what, verbose) {
+  type = switch(what,
+    gps = "gps",
+    odba = "behavior2",
+    env = "env",
+    sms = "sms"
+  )
+
+  x <- request(glue("https://www.ecotopiago.com/api/v2/{type}/device")) |>
     req_headers(
       "X-Druid-Authentication" = logstring,
-      "X-result-limit" = 1000
+      "X-result-limit" = 1000, 
+      "X-result-sort" = "timestamp"
     ) |>
     req_url_path_append(glue("/{id}/page/")) |>
     req_url_path_append(datetime)
@@ -75,9 +83,18 @@ ecotopia_devlist <- function(logstring, verbose = TRUE) {
     as.data.table()
 
   # remove unnecessary columns
-  if (nrow(o) > 0 )
-  o <- o[, .(device_id, uuid, updated_at, timestamp, latitude, longitude, altitude, hdop, vdop)]
-  
+  if (nrow(o) > 0 & type == "gps") {
+    o <- o[, .(device_id, uuid, updated_at, timestamp, latitude, longitude, altitude, hdop, vdop)]
+  }
+
+  if (nrow(o) > 0 & type == "behavior2") {
+    o <- o[, .(device_id, uuid, updated_at, timestamp, odba)]
+  }
+
+  if (nrow(o) > 0 & type == "env") {
+    o <- o[, .(device_id, uuid, updated_at, timestamp, ambient_light, inner_pressure, battery_power, battery_voltage)]
+  }
+
 
   o
 }
@@ -85,7 +102,9 @@ ecotopia_devlist <- function(logstring, verbose = TRUE) {
 #' Download gps data of a given id after a given datetime
 #'
 #' @param logstring login string as returned by [apis::ecotopia_login]
-#' @param cleanup   when FALSE (default) returns a cleaned up data.table removing all unnecessary columns. 
+#' @param id        device ID (e.g 640dab1c6f2d20ea33538465)
+#' @param datetime_ datetime string ("2000-01-01T00:00:00Z")
+#' @param what      data type: "gps", "odba" , "sms" or "env"
 #' @param verbose   print [httr2::request] string. Default to TRUE.
 #'
 #' @return a data.table
@@ -94,24 +113,31 @@ ecotopia_devlist <- function(logstring, verbose = TRUE) {
 #' crd = config::get(config = "druid_api")
 #' logstring <- ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1, crd$kw2)
 #' dl = ecotopia_devlist(logstring)
-#' x =  ecotopia_gps(logstring, dl$id[100])
+#' x = ecotopia_data(logstring, dl$id[100], what = "gps")
+#' x = ecotopia_data(logstring, dl$id[100], what = "odba")
+#' x = ecotopia_data(logstring, dl$id[100], what = "sms")
 #' 
-ecotopia_gps <- function(logstring, id, datetime = "2000-01-01T00:00:00Z", verbose = TRUE) {
+ecotopia_data <- function(logstring, id, datetime = "2000-01-01T00:00:00Z", what = "gps", verbose = TRUE) {
 
-  x = .ecotopia_gps(logstring = logstring, id = id, datetime = datetime, verbose = verbose)
+  x = .ecotopia_data(logstring = logstring, id = id, datetime = datetime, what = what, verbose = verbose)
 
-  if(nrow(x) > 0) {
+  cli_progress_bar("Querying API (1000 rows):", type = "iterator", clear = FALSE)
+
+  while (nrow(x) > 0) {
+    cli_progress_update()
     last_timestamp = ymd_hms(x$timestamp) |> with_tz("UTC")
     last_timestamp = x[which(last_timestamp == max(last_timestamp)), timestamp]
 
-    x_next = .ecotopia_gps(logstring = logstring, id = id, datetime = last_timestamp, verbose = FALSE)
+    x_next = .ecotopia_data(logstring = logstring, id = id, datetime = last_timestamp, what = what, verbose = FALSE)
 
-    if(nrow(x_next == 0)) {
+    if (nrow(x_next) == 0) {
       break
     }
 
     x = rbind(x, x_next)
   }
+  
+  cli_progress_done()
 
   x
 

@@ -2,6 +2,9 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom cli cli_progress_bar
+#' @importFrom cli cli_progress_done
+#' @importFrom cli cli_progress_update
 #' @importFrom data.table :=
 #' @importFrom data.table .BY
 #' @importFrom data.table .EACHI

@@ -19,6 +19,9 @@ a character string
 \description{
 ecotopia login token
 }
+\note{
+credentials are saved to a \code{config} file. See examples.
+}
 \examples{
 crd = config::get(config = "druid_api")
 logstring = ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1,  crd$kw2)

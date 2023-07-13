@@ -17,6 +17,7 @@ Imports:
     data.table,
     openssl,
     config,
-    lubridate
+    lubridate,
+    cli
 Config/testthat/edition: 3
 Language: en-US
