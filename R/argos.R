@@ -16,7 +16,7 @@
 #' }
 argos_login <- function(un, pwd, wsdl_server) {
 
-  if(.isOnline(wsdl[1])) {
+  if(.isOnline(wsdl_server[1])) {
     wsdl =   wsdl_server[1]
   }  else {
     wsdl =   wsdl_server[2]
