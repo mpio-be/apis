@@ -122,7 +122,7 @@ argos_data <- function(login, platformId,nbDaysFromNow=20) {
   </soap:Envelope>
   ')
 
-  response = request(argos_server) |>
+  response = request(login$wsdl) |>
     req_body_raw(soap) |>
     req_perform()
 
