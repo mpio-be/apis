@@ -17,11 +17,11 @@ ecotopia_data(
 
 \item{id}{device ID (e.g 640dab1c6f2d20ea33538465)}
 
+\item{datetime}{datetime string ("2000-01-01T00:00:00Z")}
+
 \item{what}{data type: "gps", "odba" , "sms" or "env"}
 
 \item{verbose}{print \link[httr2:request]{httr2::request} string. Default to TRUE.}
-
-\item{datetime_}{datetime string ("2000-01-01T00:00:00Z")}
 }
 \value{
 a data.table
@@ -30,11 +30,13 @@ a data.table
 Download gps data of a given id after a given datetime
 }
 \examples{
+\dontrun{
 crd = config::get(config = "druid_api")
 logstring <- ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1, crd$kw2)
 dl = ecotopia_devlist(logstring)
 x = ecotopia_data(logstring, dl$id[100], what = "gps")
 x = ecotopia_data(logstring, dl$id[100], what = "odba")
 x = ecotopia_data(logstring, dl$id[100], what = "sms")
+}
 
 }

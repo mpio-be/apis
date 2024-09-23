@@ -11,6 +11,10 @@ ecotopia_login(un, pwd, kw1, kw2, verbose = TRUE)
 
 \item{pwd}{password}
 
+\item{kw1}{keyword 1}
+
+\item{kw2}{keyword 2}
+
 \item{verbose}{print \link[httr2:request]{httr2::request} string. Default to TRUE.}
 }
 \value{
@@ -20,10 +24,13 @@ a character string
 ecotopia login token
 }
 \note{
-credentials are saved to a \code{config} file. See examples.
+For security, credentials should either be stored in a configuration file or entered interactively at runtime.
+Avoid hardcoding credentials directly in your scripts. See examples for more details.
 }
 \examples{
+\dontrun{
 crd = config::get(config = "druid_api")
-logstring = ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1,  crd$kw2)
+logstring = ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1, crd$kw2)
+}
 
 }

@@ -18,7 +18,10 @@ a data.table
 List all devices for the given login profile
 }
 \examples{
+\dontrun{
 crd = config::get(config = "druid_api")
 logstring <- ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1, crd$kw2)
 dl = ecotopia_devlist(logstring)
+}
+
 }

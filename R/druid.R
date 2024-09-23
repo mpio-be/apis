@@ -5,28 +5,31 @@
 #'
 #' @param un   username
 #' @param pwd  password
+#' @param kw1  keyword 1
+#' @param kw2  keyword 2
 #' @param verbose      print [httr2::request] string. Default to TRUE.
-#' @note credentials are saved to a `config` file. See examples.
-#' @return a character string 
+#' @note For security, credentials should either be stored in a configuration file or entered interactively at runtime.
+#' Avoid hardcoding credentials directly in your scripts. See examples for more details.
+#' @return a character string
 #' @export
-#' @examples 
+#' @examples
+#' \dontrun{
 #' crd = config::get(config = "druid_api")
-#' logstring = ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1,  crd$kw2)
+#' logstring = ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1, crd$kw2)
+#' }
 #' 
 ecotopia_login <- function(un, pwd, kw1, kw2, verbose = TRUE) {
-
   x <- request("https://www.ecotopiago.com/api/v2/login") |>
     req_body_json(list(
       username = un,
       password = sha256(glue("{un} + {kw1} + {pwd} + {kw2}")) |> as.character()
-    )) 
-  
-  if(verbose) print(x)
+    ))
+
+  if (verbose) print(x)
 
   o = req_perform(x)
 
   o$headers$`x-druid-authentication`
-
 }
 
 
@@ -38,9 +41,12 @@ ecotopia_login <- function(un, pwd, kw1, kw2, verbose = TRUE) {
 #' @return a data.table
 #' @export
 #' @examples
+#' \dontrun{
 #' crd = config::get(config = "druid_api")
 #' logstring <- ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1, crd$kw2)
 #' dl = ecotopia_devlist(logstring)
+#' }
+#' 
 ecotopia_devlist <- function(logstring, verbose = TRUE) {
 
   x <- request("https://www.ecotopiago.com/api/v3/device/page") |>
@@ -103,19 +109,21 @@ ecotopia_devlist <- function(logstring, verbose = TRUE) {
 #'
 #' @param logstring login string as returned by [apis::ecotopia_login]
 #' @param id        device ID (e.g 640dab1c6f2d20ea33538465)
-#' @param datetime_ datetime string ("2000-01-01T00:00:00Z")
+#' @param datetime  datetime string ("2000-01-01T00:00:00Z")
 #' @param what      data type: "gps", "odba" , "sms" or "env"
 #' @param verbose   print [httr2::request] string. Default to TRUE.
 #'
 #' @return a data.table
 #' @export
 #' @examples
+#' \dontrun{
 #' crd = config::get(config = "druid_api")
 #' logstring <- ecotopia_login(crd$generic$un, crd$generic$pwd, crd$kw1, crd$kw2)
 #' dl = ecotopia_devlist(logstring)
 #' x = ecotopia_data(logstring, dl$id[100], what = "gps")
 #' x = ecotopia_data(logstring, dl$id[100], what = "odba")
 #' x = ecotopia_data(logstring, dl$id[100], what = "sms")
+#' }
 #' 
 ecotopia_data <- function(logstring, id, datetime = "2000-01-01T00:00:00Z", what = "gps", verbose = TRUE) {
 

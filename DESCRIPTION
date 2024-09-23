@@ -1,6 +1,6 @@
 Package: apis
 Title: Wrappers to API interfaces
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person("Mihai", "Valcu", , "mvalcu@gwdg.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6907-7802"))
@@ -8,7 +8,7 @@ Description: Various API interfaces (Druid, ARGOS-CLS, WoK, etc).
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports:
     methods,
     utils,
@@ -16,8 +16,11 @@ Imports:
     glue,
     data.table,
     openssl,
-    config,
-    lubridate,
-    cli
+    cli,
+    stringr,
+    xml2,
+    curl
+Suggests:
+    config    
 Config/testthat/edition: 3
 Language: en-US
