@@ -28,7 +28,7 @@ The function is limited to retrieving data from the last 20 days, as enforced by
 crd = config::get(config = "argos_api")
 login = argos_login(un = crd$un, pwd = crd$pwd, wsdl_server = crd$wsdl_server)
 start_date = (with_tz(Sys.time(), tzone = "UTC") - days(1) ) |> to_timestamp()
-x = argos_data(login, platformId=266471 )
+x = argos_data(login, platformId=266471, startDate =  start_date)
 }
 
 }

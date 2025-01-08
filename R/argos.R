@@ -100,7 +100,6 @@ argos_devlist <- function(login) {
 #' x = argos_data(login, platformId=266471, startDate =  start_date)
 #' }
 #' 
-# 2025-01-08T14:09:24
 
 argos_data <- function(login, platformId, startDate  ) {
 
