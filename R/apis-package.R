@@ -35,5 +35,6 @@
 #' @importFrom xml2 xml_text
 #' @importFrom openssl sha256
 #' @importFrom curl curl_fetch_memory
+#' @importFrom lubridate with_tz days
 ## usethis namespace: end
 NULL

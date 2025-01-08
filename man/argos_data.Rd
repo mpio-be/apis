@@ -4,14 +4,14 @@
 \alias{argos_data}
 \title{Retrieve Argos API Data for a Specific Platform ID}
 \usage{
-argos_data(login, platformId, nbDaysFromNow = 20)
+argos_data(login, platformId, startDate)
 }
 \arguments{
 \item{login}{A list containing authentication credentials and API information, including the username, password, and the WSDL server URL.}
 
 \item{platformId}{A character string representing the ID of the platform for which data is being requested.}
 
-\item{nbDaysFromNow}{Integer specifying the number of days back from the current date to fetch data. Defaults to 20, as per Argos system constraints.}
+\item{startDate}{observation date begin of search and end of search. Only the 10 last days are available. If endDate is not specified, the current date is assumed.}
 }
 \value{
 A \code{data.table} containing the retrieved platform data. If an error occurs during the data retrieval process, an empty \code{data.table} is returned.
@@ -27,6 +27,8 @@ The function is limited to retrieving data from the last 20 days, as enforced by
 \dontrun{
 crd = config::get(config = "argos_api")
 login = argos_login(un = crd$un, pwd = crd$pwd, wsdl_server = crd$wsdl_server)
-x = argos_data(login, platformId=123)
+start_date = (with_tz(Sys.time(), tzone = "UTC") - days(1) ) |> to_timestamp()
+x = argos_data(login, platformId=266471 )
 }
+
 }

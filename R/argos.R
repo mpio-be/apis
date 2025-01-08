@@ -84,7 +84,7 @@ argos_devlist <- function(login) {
 #'
 #' @param login A list containing authentication credentials and API information, including the username, password, and the WSDL server URL.
 #' @param platformId A character string representing the ID of the platform for which data is being requested.
-#' @param nbDaysFromNow Integer specifying the number of days back from the current date to fetch data. Defaults to 20, as per Argos system constraints.
+#' @param startDate observation date begin of search and end of search. Only the 10 last days are available. If endDate is not specified, the current date is assumed.  
 #'
 #' @return A `data.table` containing the retrieved platform data. If an error occurs during the data retrieval process, an empty `data.table` is returned.
 #' 
@@ -96,13 +96,14 @@ argos_devlist <- function(login) {
 #' \dontrun{
 #' crd = config::get(config = "argos_api")
 #' login = argos_login(un = crd$un, pwd = crd$pwd, wsdl_server = crd$wsdl_server)
-#' x = argos_data(login, platformId=123)
+#' start_date = (with_tz(Sys.time(), tzone = "UTC") - days(1) ) |> to_timestamp()
+#' x = argos_data(login, platformId=266471, startDate =  start_date)
 #' }
-argos_data <- function(login, platformId,nbDaysFromNow=20) {
-  if(nbDaysFromNow > 20) {
-    nbDaysFromNow = 20
-    warning(dQuote('nbDaysFromNow'), ' cannot be larger than 20')
-  }
+#' 
+# 2025-01-08T14:09:24
+
+argos_data <- function(login, platformId, startDate  ) {
+
 
   soap = 
   glue('<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:typ="http://service.dataxmldistribution.argos.cls.fr/types">
@@ -112,7 +113,8 @@ argos_data <- function(login, platformId,nbDaysFromNow=20) {
         <typ:username>{login$un}</typ:username>
         <typ:password>{login$pwd}</typ:password>
         <typ:platformId>{platformId}</typ:platformId>
-        <typ:nbDaysFromNow>{nbDaysFromNow}</typ:nbDaysFromNow>
+        <typ:period><typ:startDate>{startDate}</typ:startDate></typ:period>
+        <typ:referenceDate>MODIFICATION_DATE</typ:referenceDate>
         <typ:displayDiagnostic>true</typ:displayDiagnostic>
         <typ:displayMessage>true</typ:displayMessage>
         <typ:displaySensor>true</typ:displaySensor>

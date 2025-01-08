@@ -19,7 +19,8 @@ Imports:
     cli,
     stringr,
     xml2,
-    curl
+    curl,
+    lubridate
 Suggests:
     config    
 Config/testthat/edition: 3
