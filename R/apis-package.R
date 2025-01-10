@@ -15,6 +15,7 @@
 #' @importFrom data.table .NGRP
 #' @importFrom data.table .SD
 #' @importFrom data.table data.table
+#' @importFrom data.table as.data.table
 #' @importFrom data.table rbindlist
 #' @importFrom data.table fread
 #' @importFrom glue glue
@@ -35,6 +36,6 @@
 #' @importFrom xml2 xml_text
 #' @importFrom openssl sha256
 #' @importFrom curl curl_fetch_memory
-#' @importFrom lubridate with_tz days
+#' @importFrom lubridate with_tz days ymd_hms
 ## usethis namespace: end
 NULL
